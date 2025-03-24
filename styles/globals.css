@@ -1,26 +1,45 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply bg-gray-100 text-neutral-700;
+}
+
+.auth-form {
+  @apply flex flex-col items-center justify-center h-screen;
+
+  .title {
+    @apply text-3xl text-center font-bold;
+  }
+
+  .error {
+    @apply text-red-500 text-sm mb-4;
+  }
+
+  form {
+    @apply w-full max-w-md mx-auto p-6 rounded-lg shadow-md mt-10 bg-neutral-50;
+
+    .form-group {
+      @apply mb-4;
+
+      label {
+        @apply text-gray-700 font-bold mb-2 block;
+      }
+
+      input {
+        @apply border-2 border-gray-300 rounded-md p-2 w-full focus:outline-blue-400;
+      }
+    }
+
+    button {
+      @apply bg-blue-500 text-white font-bold py-2 px-4 rounded-md mt-4 cursor-pointer hover:bg-blue-600;
+    }
+  }
+
+  .cta {
+    @apply text-sm mt-4;
+
+    a {
+      @apply text-blue-500 hover:underline font-medium;
+    }
+  }
 }
