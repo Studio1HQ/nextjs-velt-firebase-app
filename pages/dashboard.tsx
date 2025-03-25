@@ -7,6 +7,8 @@ import {
   VeltCommentTool,
   VeltSidebarButton,
   VeltCommentsSidebar,
+  VeltComments,
+  VeltPresence,
 } from "@veltdev/react";
 import { auth } from "../firebase";
 
@@ -46,36 +48,51 @@ const Dashboard = () => {
   useSetDocumentId("my-document-id");
 
   return (
-    <div className="content-container">
-      <div>
-        <h1>Dashboard</h1>
-        <button onClick={logout}>Logout</button>
-      </div>
+    <div className="p-6 h-screen">
+      <div className="bg-white min-h-full p-6">
+        <nav className="flex flex-row justify-between">
+          <h1>Dashboard</h1>
+          <button onClick={logout}>Logout</button>
+        </nav>
 
-      <div className="flex justify-end">
-        <VeltCommentsSidebar pageMode={true} />
+        <header className="flex flex-col justify-end">
+          <div className="flex items-center">
+            <h2>Online:</h2>
+            <VeltPresence />
+          </div>
+        </header>
+
+        <div className="fixed bottom-10 right-10">
+          <VeltSidebarButton />
+          <VeltCommentsSidebar pageMode={true} />
+          {/* for viewing comments */}
+          <VeltComments />
+        </div>
+
+        {/* button for adding comments */}
         <VeltCommentTool />
-        <VeltSidebarButton />
-      </div>
 
-      <h2>Article: The Future of Web Development</h2>
+        <main>
+          <h2>Article: The Future of Web Development</h2>
 
-      <div id="commentable-paragraph-1" className="commentable-text">
-        <p>
-          The web development landscape is constantly evolving. New frameworks
-          and libraries emerge every year, promising to make development faster
-          and more efficient. However, with these advancements comes the
-          challenge of keeping up.
-        </p>
-      </div>
+          <div id="commentable-paragraph-1" className="commentable-text">
+            <p>
+              The web development landscape is constantly evolving. New
+              frameworks and libraries emerge every year, promising to make
+              development faster and more efficient. However, with these
+              advancements comes the challenge of keeping up.
+            </p>
+          </div>
 
-      <div id="commentable-paragraph-2" className="commentable-text">
-        <p>
-          Collaboration tools have become essential for modern development
-          teams. The ability for team members to comment directly on content and
-          mention each other streamlines the feedback process and ensures
-          nothing falls through the cracks.
-        </p>
+          <div id="commentable-paragraph-2" className="commentable-text">
+            <p>
+              Collaboration tools have become essential for modern development
+              teams. The ability for team members to comment directly on content
+              and mention each other streamlines the feedback process and
+              ensures nothing falls through the cracks.
+            </p>
+          </div>
+        </main>
       </div>
     </div>
   );
