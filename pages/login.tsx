@@ -26,7 +26,7 @@ export default function Login() {
 
   return (
     <div className="auth-form">
-      <h1 className="title">Log In</h1>
+      <h1 className="title">Log In to DevInsights</h1>
       {error && <div className="error">{error}</div>}
 
       <form onSubmit={handleSubmit}>

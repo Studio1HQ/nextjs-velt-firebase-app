@@ -2,8 +2,11 @@
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function Signup() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -20,6 +23,7 @@ export default function Signup() {
     try {
       setError("");
       await signup(email, password);
+      router.push("/dashboard");
     } catch (err) {
       setError("Failed to create an account: " + (err as Error).message);
     }
@@ -27,7 +31,7 @@ export default function Signup() {
 
   return (
     <div className="auth-form">
-      <h1 className="title">Sign Up</h1>
+      <h1 className="title">Sign Up for DevInsights</h1>
       {error && <div className="error">{error}</div>}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
