@@ -11,6 +11,7 @@ import {
   VeltPresence,
 } from "@veltdev/react";
 import { auth } from "@/firebase";
+import Link from "next/link";
 
 const Dashboard = () => {
   const { logout } = useAuth();
@@ -61,7 +62,7 @@ const Dashboard = () => {
   useSetDocumentId("collaborative-article-review");
 
   return (
-    <div className="p-6 min-h-screen bg-gray-100">
+    <div className="p-6 min-h-screen bg-gray-100 relative">
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
         <nav className="flex flex-row justify-between items-center p-6 bg-gray-50 border-b">
           <h1 className="text-3xl font-bold text-gray-800">
@@ -166,8 +167,9 @@ const Dashboard = () => {
                 communication channels directly within the development workflow.
               </p>
               <blockquote className="border-l-4 border-blue-500 pl-4 italic text-gray-600">
-                &quot;Collaboration is no longer an afterthought, but a core design
-                principle in modern web development.&quot; - Anonymous Developer
+                &quot;Collaboration is no longer an afterthought, but a core
+                design principle in modern web development.&quot; - Anonymous
+                Developer
               </blockquote>
             </section>
 
@@ -187,19 +189,32 @@ const Dashboard = () => {
         </main>
 
         <footer className="bg-gray-50 p-6 text-center text-gray-600">
-          <p>© 2024 DevInsights. All rights reserved.</p>
+          <p>
+            Created by{" "}
+            <Link
+              href="https://tech.timonwa.com/links"
+              target="_blank"
+              className="text-blue-500 ubderline">
+              Timonwa
+            </Link>
+            .{" "}
+            <Link href="#" target="_blank" className="text-blue-500 ubderline">
+              MIT License
+            </Link>
+            .
+          </p>
         </footer>
-      </div>
 
-      {/* Velt Components */}
-      <div className="fixed bottom-10 right-10 z-50 space-y-4">
-        <VeltSidebarButton />
-        <VeltCommentsSidebar pageMode={true} />
-        <VeltComments />
-      </div>
+        {/* Velt Components */}
+        <div className="fixed bottom-10 right-10 z-50 space-y-4">
+          <VeltSidebarButton />
+          <VeltCommentsSidebar pageMode={true} />
+          <VeltComments />
+        </div>
 
-      <div className="fixed top-1/2 right-10 transform -translate-y-1/2 z-50">
-        <VeltCommentTool />
+        <div className="fixed top-1/2 right-10 transform -translate-y-1/2 z-50">
+          <VeltCommentTool />
+        </div>
       </div>
     </div>
   );
