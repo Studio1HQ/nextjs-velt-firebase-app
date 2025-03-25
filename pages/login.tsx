@@ -12,7 +12,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const { login } = useAuth();
 
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
     try {

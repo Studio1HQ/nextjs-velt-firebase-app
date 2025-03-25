@@ -6,21 +6,13 @@ import {
   useSetDocumentId,
   VeltCommentTool,
   VeltSidebarButton,
+  VeltCommentsSidebar,
 } from "@veltdev/react";
 import { auth } from "../firebase";
 
 const Dashboard = () => {
   const { logout } = useAuth();
   const { client } = useVeltClient();
-
-  const contactElement = client.useContactUtils();
-
-  useEffect(() => {
-    contactElement.updateContactList(
-      [{ userId: "userId1", name: "User Name", email: "user1@velt.dev" }],
-      { merge: true }
-    );
-  }, [contactElement]);
 
   useEffect(() => {
     if (client) {
@@ -61,6 +53,7 @@ const Dashboard = () => {
       </div>
 
       <div className="flex justify-end">
+        <VeltCommentsSidebar pageMode={true} />
         <VeltCommentTool />
         <VeltSidebarButton />
       </div>
