@@ -10,7 +10,7 @@ export default function Signup() {
   const [error, setError] = useState("");
   const { signup } = useAuth();
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -21,7 +21,7 @@ export default function Signup() {
       setError("");
       await signup(email, password);
     } catch (err) {
-      setError("Failed to create an account: " + err.message);
+      setError("Failed to create an account: " + (err as Error).message);
     }
   };
 

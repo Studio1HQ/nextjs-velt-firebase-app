@@ -12,7 +12,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const { login } = useAuth();
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
 
     try {
@@ -20,7 +20,7 @@ export default function Login() {
       await login(email, password);
       router.push("/dashboard");
     } catch (err) {
-      setError("Failed to sign in: " + err.message);
+      setError("Failed to sign in: " + (err as Error).message);
     }
   };
 
