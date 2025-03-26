@@ -11,7 +11,7 @@ Visit [Timonwa's Notes](https://tech.timonwa.com/blog) for more awesome technica
 ## Features
 
 - User authentication with Firebase
-- Real-time comments, @mentions, and user presence using Velt
+- Real-time comments, @mentions, notifications, and user presence using Velt
 - Modern UI with Tailwind CSS
 
 ## Prerequisites
