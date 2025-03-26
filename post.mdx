@@ -5,7 +5,9 @@ Modern web applications thrive on user engagement. The more users interact with 
 However, building these features from scratch can be a nightmare and become overwhelming. You have to think about everything from the UI to the backend, handle the user authentication, data storage, realtime updates, and notifications. Depending on the team size, you might spend weeks or even months building a system that could have been done in days with the right tools.
 
 In this article, we will show you how easy it can be to implement @mentions, comments, and notifications in your web application using Velt. This powerful collaboration tool simplifies the process. We'll walk through a complete example using Next.js and Firebase authentication.
-Why @mentions and Comments Matter
+
+## Why @mentions and Comments Matter
+
 In this age of social media, users expect to be able to interact with each other. They want to comment on content, mention their friends, and receive notifications when someone interacts with them. These features are no longer optional; they're essential for user engagement.
 
 When users can comment on content, they feel more connected to it. They can ask questions, provide feedback, and share their thoughts. This creates a sense of community around your application. When users can mention each other, they can create direct connections. This fosters collaboration and encourages users to return to your application to see what their friends are saying.
@@ -13,7 +15,9 @@ When users can comment on content, they feel more connected to it. They can ask 
 Users who receive notifications are more likely to return to your application. Notifications serve as reminders that something is happening that they might be interested in. This keeps users engaged and coming back for more.
 
 If you are building an application that requires user interaction, you need to consider how you would implement these features. You could build them from scratch, but that would take a lot of time and effort. Or you can use tools like Velt to handle all the complexity for you.
-The Challenge of Building It Yourself
+
+## The Challenge of Building It Yourself
+
 Before we talk about Velt, let's take a moment to understand the complexity of building a comments and @mentions system from scratch.
 
 ### Frontend Complexity
@@ -27,14 +31,17 @@ You must also handle realtime updates so users can see new comments without refr
 The backend is even more complex. You must build a database schema for comments, replies, and mentions and provide indexing for quick user search when typing '@'. You also have to develop a notification delivery system, set up permissions and access controls and moderation tools to prevent abuse on the platform and ensure that the system is scalable and performant.
 
 As you can see, building a comments and @mentions system is still a massive project, even with a team of developers.
-Velt: The Shortcut
+
+## Velt: The Shortcut
 
 Velt is a powerful tool that simplifies the process of adding comments and @mentions to your application. It provides a set of UI components and a managed backend infrastructure, making adding these features to your application easy.
 
 The components are designed to be easy to use and integrate seamlessly with your existing application. All you need to do is install the Velt package, set up your API key, and use the provided components in your application.
 
 Velt handles all of this complexity with minimal setup. And the best part? Implementation takes hours, not months.
-Project Setup
+
+## Project Setup
+
 We will build a simple Next.js application that allows users to log in with Firebase's Google authentication and leave comments on a document. We'll use Velt to handle comments, notifications, and @mentions, as well as Tailwind CSS for styling.
 
 This project will be a simple collaborative article review platform where users can leave feedback and mention collaborators on a document. The goal is to demonstrate how easy it is to implement these features using Velt.
@@ -55,7 +62,7 @@ Next, install the necessary dependencies:
 npm install @velt/react firebase
 ```
 
-Implementing Firebase Authentication
+## Implementing Firebase Authentication
 
 We need to set up Firebase in our Next.js application to use Firebase authentication. To provide a seamless login experience, we will use the Google authentication provider.
 
@@ -302,7 +309,9 @@ export default withAuth(Dashboard);
 ```
 
 Here, we create a simple dashboard page with a navigation bar and a main content area. The `withAuth` HOC ensures that only authenticated users can access this page.
-Setting up Velt in Your Nextjs App
+
+## Setting up Velt in Your Nextjs App
+
 Now that our Firebase authentication is set up, let's integrate Velt for comments and @mentions.
 
 Visit https://velt.dev/ to create an account and get your API key. Once you have your API key, include it in your `.env.local` file:
@@ -615,14 +624,17 @@ export default withAuth(Dashboard);
 ```
 
 Visiting our dashboard page in the browser, we should experience the following:
-A login page that allows users to sign in with Google.
-A dashboard page that displays the document and allows users to add comments and @mentions.
-A comments sidebar that shows the comments and allows users to add new comments.
-A presence indicator that shows the users who are currently online and viewing the document.
-A notification button that indicates the number of unread notifications and opens a panel with all the notifications.
-A comment button that allows users to add comments and @mentions to the document.
-A logout button that enables users to sign out of the application.
-Conclusion
+
+- A login page that allows users to sign in with Google.
+- A dashboard page that displays the document and allows users to add comments and @mentions.
+- A comments sidebar that shows the comments and allows users to add new comments.
+- A presence indicator that shows the users who are currently online and viewing the document.
+- A notification button that indicates the number of unread notifications and opens a panel with all the notifications.
+- A comment button that allows users to add comments and @mentions to the document.
+- A logout button that enables users to sign out of the application.
+
+## Conclusion
+
 In this article, we have demonstrated how to implement @mentions and comments in a web application using Velt. We have shown how to set up Firebase authentication to sync users with Velt, integrate Velt into a Next.js application, and use Velt's components for easy collaboration and user engagement.
 
 We have also discussed the benefits of using Velt, including the time saved in development and the ease of use of its components. By using Velt, you can focus on building your application and providing a great user experience rather than spending weeks or months building a comments and @mentions system from scratch.
