@@ -1,0 +1,632 @@
+# How to Implement @mentions and Comments with Firebase Auth Using Velt.dev
+
+Modern web applications thrive on user engagement. The more users interact with your app and each other, the more likely they are to return. Two features that significantly boost engagement are comments and @mentions. Think about it - when someone mentions you in a comment, you get a notification, check it out, and end up being pulled back into the application.
+
+However, building these features from scratch can be a nightmare and become overwhelming. You have to think about everything from the UI to the backend, handle the user authentication, data storage, realtime updates, and notifications. Depending on the team size, you might spend weeks or even months building a system that could have been done in days with the right tools.
+
+In this article, we will show you how easy it can be to implement @mentions, comments, and notifications in your web application using Velt. This powerful collaboration tool simplifies the process. We'll walk through a complete example using Next.js and Firebase authentication.
+Why @mentions and Comments Matter
+In this age of social media, users expect to be able to interact with each other. They want to comment on content, mention their friends, and receive notifications when someone interacts with them. These features are no longer optional; they're essential for user engagement.
+
+When users can comment on content, they feel more connected to it. They can ask questions, provide feedback, and share their thoughts. This creates a sense of community around your application. When users can mention each other, they can create direct connections. This fosters collaboration and encourages users to return to your application to see what their friends are saying.
+
+Users who receive notifications are more likely to return to your application. Notifications serve as reminders that something is happening that they might be interested in. This keeps users engaged and coming back for more.
+
+If you are building an application that requires user interaction, you need to consider how you would implement these features. You could build them from scratch, but that would take a lot of time and effort. Or you can use tools like Velt to handle all the complexity for you.
+The Challenge of Building It Yourself
+Before we talk about Velt, let's take a moment to understand the complexity of building a comments and @mentions system from scratch.
+
+### Frontend Complexity
+
+On the frontend, you need to build a user interface that allows users to leave comments and reply to comments, display a list of comments and replies, and mention other users in the comments.
+
+You must also handle realtime updates so users can see new comments without refreshing the page and implement pagination or infinite scrolling for comments.
+
+### Backend Requirements
+
+The backend is even more complex. You must build a database schema for comments, replies, and mentions and provide indexing for quick user search when typing '@'. You also have to develop a notification delivery system, set up permissions and access controls and moderation tools to prevent abuse on the platform and ensure that the system is scalable and performant.
+
+As you can see, building a comments and @mentions system is still a massive project, even with a team of developers.
+Velt: The Shortcut
+
+Velt is a powerful tool that simplifies the process of adding comments and @mentions to your application. It provides a set of UI components and a managed backend infrastructure, making adding these features to your application easy.
+
+The components are designed to be easy to use and integrate seamlessly with your existing application. All you need to do is install the Velt package, set up your API key, and use the provided components in your application.
+
+Velt handles all of this complexity with minimal setup. And the best part? Implementation takes hours, not months.
+Project Setup
+We will build a simple Next.js application that allows users to log in with Firebase's Google authentication and leave comments on a document. We'll use Velt to handle comments, notifications, and @mentions, as well as Tailwind CSS for styling.
+
+This project will be a simple collaborative article review platform where users can leave feedback and mention collaborators on a document. The goal is to demonstrate how easy it is to implement these features using Velt.
+
+Firebase is a backend-as-a-service platform that provides a suite of tools for building web and mobile applications. It offers features like authentication, realtime databases, cloud storage, and more. In this project, we'll use Firebase for user authentication.
+
+Tailwind CSS is a utility-first CSS framework that allows you to quickly build custom designs. It provides a set of pre-defined classes that you can use to style your components without writing custom CSS.
+
+To create a new Next.js project, run the following command and follow the prompts:
+
+```bash
+npx create-next-app
+```
+
+Next, install the necessary dependencies:
+
+```bash
+npm install @velt/react firebase
+```
+
+Implementing Firebase Authentication
+
+We need to set up Firebase in our Next.js application to use Firebase authentication. To provide a seamless login experience, we will use the Google authentication provider.
+
+### Create a Firebase Project
+
+Create a Firebase project at firebase.google.com if you haven't already, and get your app credentials.
+
+Then, in your project, create a file named `firebase.js` in the root directory:
+
+```jsx
+// firebase.js
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+
+const firebaseConfig = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+export { auth };
+```
+
+Create a `.env.local` file in your project root with your Firebase credentials:
+
+```
+NEXT_PUBLIC_FIREBASE_API_KEY=your-api-key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-auth-domain
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-storage-bucket
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
+NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
+```
+
+### Enable Authentication
+
+Create a new file, `AuthContext.jsx` in the `contexts` directory to provide a context for authentication:
+
+```jsx
+// contexts/AuthContext.jsx
+import { createContext, useContext, useState, useMemo, useEffect } from "react";
+import {
+  onAuthStateChanged,
+  signOut,
+  signInWithPopup,
+  GoogleAuthProvider,
+} from "firebase/auth";
+import { auth } from "../firebase";
+
+const AuthContext = createContext(undefined);
+
+export const AuthProvider = ({ children }) => {
+  const [currentUser, setCurrentUser] = (useState < User) | (null > null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, user => {
+      setCurrentUser(user);
+      setLoading(false);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  const login = () => {
+    const provider = new GoogleAuthProvider();
+    return signInWithPopup(auth, provider);
+  };
+
+  const logout = () => {
+    return signOut(auth);
+  };
+
+  const value = useMemo(
+    () => ({
+      currentUser,
+      login,
+      logout,
+    }),
+    [currentUser]
+  );
+
+  return (
+    <AuthContext.Provider value={value}>
+      {!loading && children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within a AuthProvider");
+  }
+  return context;
+};
+```
+
+This context will handle user authentication(logging in and signing out) and provide the current user state throughout the application.
+
+### Set Up the Login Page
+
+Next, let's allow users to log in and out. Update the `index.jsx` file in the `pages` directory:
+
+```jsx
+// pages/index.js
+import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/router";
+
+export default function Home() {
+  const router = useRouter();
+
+  const [error, setError] = useState("");
+  const { login } = useAuth();
+
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+
+    try {
+      setError("");
+      await login();
+      router.push("/dashboard");
+ } catch (err) {
+      setError("Failed to sign in: " + (err as Error).message);
+ }
+ };
+
+  return (
+ <div className="flex flex-col items-center justify-center h-screen space-y-4">
+ <main className="w-full max-w-md mx-auto p-6 rounded-lg shadow-md mt-10 bg-neutral-50 flex flex-col items-center justify-center">
+ <h1 className="text-4xl font-bold mb-4">DevInsights</h1>
+        {error && <p className="text-red-500">{error}</p>}
+
+ <button
+          onClick={handleSubmit}
+          className="bg-blue-500 text-white font-bold py-2 px-4 rounded-md my-4 cursor-pointer hover:bg-blue-600">
+ Sign in with Google
+ </button>
+ </main>
+ </div>
+ );
+}
+```
+
+We created a simple login page with a button to sign in with Google. If the login is successful, the user is redirected to the dashboard page.
+
+### Create a Higher-Order Component for Protected Routes
+
+To protect our dashboard route, we can create a higher-order component (HOC) that checks if the user is authenticated before rendering the page. If the user is not logged in, they will be redirected to the login page.
+
+Create a new file `withAuth.jsx` in the `utils` directory:
+
+```jsx
+// utils/withAuth.jsx
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { auth } from "@/firebase";
+
+export function withAuth(Component) {
+  return function WithAuth(props) {
+    const [user, setUser] = useState(null);
+    const router = useRouter();
+
+    useEffect(() => {
+      const unsubscribe = auth.onAuthStateChanged(user => {
+        if (user) {
+          setUser(user);
+        } else {
+          router.push("/login");
+        }
+      });
+
+      return unsubscribe;
+    }, [router]);
+
+    if (!user) return null;
+
+    return <Component {...props} />;
+  };
+}
+```
+
+### Create a Page for Comments and Mentions
+
+We will create a simple dashboard page to demonstrate how to use Velt for comments and @mentions. This page will display a document where users can collaborate and review content.
+
+In the `pages` directory, create a new file called `dashboard.jsx`:
+
+```jsx
+// pages/dashboard.jsx
+import React from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { withAuth } from "@/utils/withAuth";
+
+const Dashboard = () => {
+  const { logout } = useAuth();
+
+  return (
+    <div className="p-6 min-h-screen bg-gray-100 relative">
+      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+        <nav className="flex flex-row justify-between items-center p-6 bg-gray-50 border-b">
+          <h1 className="text-3xl font-bold text-gray-800">
+            DevInsights: Modern Web Development
+          </h1>
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={logout}
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors">
+              Logout
+            </button>
+          </div>
+        </nav>
+
+        <div className="flex justify-between p-4 bg-blue-50">
+          <div className="flex items-center">
+            <h2 className="mr-2 font-semibold">Online Contributors:</h2>
+          </div>
+          <div className="text-sm text-gray-600">
+            Status: Community Review Draft
+          </div>
+        </div>
+
+        <main className="p-8">
+          <article>
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Labore
+            fugiat est iste obcaecati, architecto mollitia repellendus impedit
+            beatae explicabo nesciunt perferendis numquam rem, dicta rerum!
+            Error incidunt ratione odit magni?
+          </article>
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default withAuth(Dashboard);
+```
+
+Here, we create a simple dashboard page with a navigation bar and a main content area. The `withAuth` HOC ensures that only authenticated users can access this page.
+Setting up Velt in Your Nextjs App
+Now that our Firebase authentication is set up, let's integrate Velt for comments and @mentions.
+
+Visit https://velt.dev/ to create an account and get your API key. Once you have your API key, include it in your `.env.local` file:
+
+```
+NEXT_PUBLIC_VELT_API_KEY=your-velt-api-key
+```
+
+### Wrap Your Application with Velt Provider
+
+Velt provides a React provider that we can use to wrap our application. It will allow us to access Velt's features throughout our app.
+
+In your `_app.jsx` file, import the Velt provider and wrap your application with it along with the `AuthProvider`:
+
+```jsx
+import "@/styles/globals.css";
+import type { AppProps } from "next/app";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { VeltProvider } from "@veltdev/react";
+
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+ <AuthProvider>
+ <VeltProvider apiKey={process.env.NEXT_PUBLIC_VELT_API_KEY!}>
+ <Component {...pageProps} />
+ </VeltProvider>
+ </AuthProvider>
+ );
+}
+```
+
+Remember to pass your Velt API key to the `VeltProvider`.
+
+### Syncing Velt with your Firebase users
+
+When users log in to the app, we need to identify them in Velt. This is important because Velt uses this information to display comments and @mentions correctly. We will use the `useVeltClient` hook to get the Velt client and identify the user.
+
+In your `dashboard.jsx` file, import the `useVeltClient` hook, which we will use to identify the user when they log in:
+
+```jsx
+import { useVeltClient } from "@veltdev/react";
+```
+
+Then, add the following code to identify the user:
+
+```jsx
+const { client } = useVeltClient();
+
+// Generate random hex color
+const getBgColor = () => {
+  return "#" + Math.floor(Math.random() * 16777215).toString(16);
+};
+
+// Get text color based on the background color
+const getTextColor = (backgroundColor: string) => {
+  const hex = backgroundColor.replace("#", "");
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  return brightness >= 128 ? "#000" : "#fff";
+};
+
+useEffect(() => {
+  const initVelt = async () => {
+    if (client && auth?.currentUser) {
+      const user = {
+        userId: auth?.currentUser?.uid,
+        organizationId: "default",
+        name: auth?.currentUser?.displayName,
+        email: auth?.currentUser?.email,
+        photoUrl: auth?.currentUser?.photoURL,
+        color: getBgColor(),
+        textColor: getTextColor(getBgColor()),
+      };
+
+      await client.identify(user);
+    }
+  };
+  initVelt().catch(console.error);
+}, [client]);
+```
+
+Let us break the code down:
+
+- The `getBgColor` function generates a random hex color for the background color for the user's avatar.
+- The `getTextColor` function calculates the text color based on the background color, ensuring the text is always readable against the background.
+- In the `useEffect` hook, we check if the Velt client and Firebase auth user is available. If they are, we create a user object with the necessary information and call `client.identify(user)` to identify the user in Velt.
+- The `organizationId` is set to "default" for simplicity, but you can change it to match your application's organization structure.
+- Finally, we call the `initVelt` function to initialize Velt and identify the user.
+
+### Setting up the Document ID
+
+We need to set up a document ID for our Velt instance. Velt will use this document ID to identify the document we are working on. It is essential to set this up correctly so that Velt can manage comments and @mentions properly.
+
+In the `dashboard.jsx` file, we will set the document ID to "collaborative-article-review". You can change this value to match your application's requirements.
+
+```jsx
+useEffect(() => {
+  if (client) {
+    client.setDocument("collaborative-article-review", {
+      documentName: "Web Development Insights",
+    });
+  }
+}, [client]);
+```
+
+### Understanding Velt Components
+
+Velt provides several components that you can use to build a comments feature for your application. The most important ones are `VeltCommentTool`, `VeltComments`, `VeltPresence` and `VeltNotificationsTool`. These components are designed to be easy to use and integrate seamlessly with your existing application.
+
+Here is a brief overview of the components we will be using:
+
+- `VeltCommentTool`: It provides a button to initiate comment mode, turning the browser cursor into a comment pin.
+- `VeltComments`: This component renders comments on the application.
+- `VeltPresence`: It shows the avatars of the active users in the document.
+- `VeltNotificationsTool`: This component displays realtime notifications of activities on the app.
+
+We will also use the `VeltSidebarButton` and `VeltCommentsSidebar` components to provide a button that opens the comments sidebar and displays the comments in a sidebar, respectively.
+
+You can learn more about these components in the Velt documentation.
+Implementing comments and @mentions with Velt
+Now that we have Velt set up let's update our dashboard page using these components to allow for review and collaboration on the document. We will add a comment button and notification button to the navbar, as well as a comments sidebar at the bottom right corner of the screen. We will also add a presence indicator to show who is viewing the document online.
+
+### Importing Velt Components
+
+Import the following components from Velt at the top of your `dashboard.jsx` file:
+
+```jsx
+import {
+  VeltCommentTool,
+  VeltComments,
+  VeltPresence,
+  VeltNotificationsTool,
+  VeltSidebarButton,
+  VeltCommentsSidebar,
+} from "@veltdev/react";
+```
+
+### Adding the Comment Tool and Notifications Tool
+
+Add the `VeltCommentTool` and `VeltNotificationsTool` components to the navbar. These components will provide buttons for adding comments and viewing notifications.
+
+```jsx
+<nav className="flex flex-row justify-between items-center p-6 bg-gray-50 border-b">
+  <h1 className="text-3xl font-bold text-gray-800">
+    DevInsights: Modern Web Development
+  </h1>
+  <div className="flex items-center space-x-4">
+    <VeltCommentTool />
+    <VeltNotificationsTool />
+    <button
+      onClick={logout}
+      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors">
+      Logout
+    </button>
+  </div>
+</nav>
+```
+
+Clicking on `VeltCommentTool` initiates the comment mode, turning our cursor into a comment pin so we can add comments to elements anywhere in the article. We can also highlight texts by clicking on the comment button to add comments to the highlighted text.
+
+The `VeltNotificationsTool` component displays a notification button that shows the number of unread notifications. When clicked, it opens a panel with all the notifications.
+
+### Viewing Online Users
+
+Include the `VeltPresence` component in the header of the dashboard page. This component will show the users currently viewing the document online.
+
+```jsx
+<header className="flex justify-between p-4 bg-blue-50">
+  <div className="flex items-center">
+    <h2 className="mr-2 font-semibold">Online Contributors:</h2>
+    <VeltPresence />
+  </div>
+  <div className="text-sm text-gray-600">Status: Community Review Draft</div>
+</header>
+```
+
+### managing comments in Velt
+
+At the bottom of the dashboard page, add the `VeltSidebarButton`, `VeltCommentsSidebar`, and `VeltComments` components. The `VeltSidebarButton` component will provide a button to open the comments sidebar and display the comments. The other two components will display the comments and allow users to add new comments.
+
+```jsx
+<div className="fixed bottom-10 right-10 z-50 space-y-4">
+  <VeltSidebarButton />
+  <VeltCommentsSidebar pageMode={true} />
+  <VeltComments />
+</div>
+```
+
+### Viewing and Adding Comments
+
+To display the comments and allow users to add new comments, we will add the `VeltCommentsSidebar` and `VeltComments` components to the bottom of the dashboard page. The `VeltCommentsSidebar` component will provide a sidebar for viewing and adding comments, while the `VeltComments` component will allow you to render and leave pinned comments anywhere in the document.
+
+```jsx
+<div className="fixed bottom-10 right-10 z-50 space-y-4">
+  <VeltSidebarButton />
+  <VeltCommentsSidebar pageMode={true} />
+  <VeltComments />
+</div>
+```
+
+Let us view the complete code for the `dashboard.jsx` file:
+
+```jsx
+import React, { useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { withAuth } from "@/utils/withAuth";
+import {
+  useVeltClient,
+  VeltCommentTool,
+  VeltComments,
+  VeltPresence,
+  VeltNotificationsTool,
+  VeltSidebarButton,
+  VeltCommentsSidebar,
+} from "@veltdev/react";
+import { auth } from "@/firebase";
+
+const Dashboard = () => {
+  const { logout } = useAuth();
+  const { client } = useVeltClient();
+
+  // Generate random hex color
+  const getBgColor = () => {
+    return "#" + Math.floor(Math.random() * 16777215).toString(16);
+  };
+
+  // Get text color based on the background color
+  const getTextColor = (backgroundColor: string) => {
+    const hex = backgroundColor.replace("#", "");
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness >= 128 ? "#000" : "#fff";
+  };
+
+  useEffect(() => {
+    const initVelt = async () => {
+      if (client && auth?.currentUser) {
+        const user = {
+          userId: auth?.currentUser?.uid,
+          organizationId: "default",
+          name: auth?.currentUser?.displayName,
+          email: auth?.currentUser?.email,
+          photoUrl: auth?.currentUser?.photoURL,
+          color: getBgColor(),
+          textColor: getTextColor(getBgColor()),
+        };
+
+        await client.identify(user);
+      }
+    };
+    initVelt().catch(console.error);
+  }, [client]);
+
+  useEffect(() => {
+    if (client) {
+      client.setDocument("collaborative-article-review", {
+        documentName: "Web Development Insights",
+      });
+    }
+  }, [client]);
+
+  return (
+    <div className="p-6 min-h-screen bg-gray-100 relative">
+      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+        <nav className="flex flex-row justify-between items-center p-6 bg-gray-50 border-b">
+          <h1 className="text-3xl font-bold text-gray-800">
+            DevInsights: Modern Web Development
+          </h1>
+          <div className="flex items-center space-x-4">
+            <VeltCommentTool />
+            <VeltNotificationsTool />
+            <button
+              onClick={logout}
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors">
+              Logout
+            </button>
+          </div>
+        </nav>
+
+        <header className="flex justify-between p-4 bg-blue-50">
+          <div className="flex items-center">
+            <h2 className="mr-2 font-semibold">Online Contributors:</h2>
+            <VeltPresence />
+          </div>
+          <div className="text-sm text-gray-600">
+            Status: Community Review Draft
+          </div>
+        </header>
+
+        <main className="p-8">
+          <article>{/* Article  Content */}</article>
+        </main>
+
+        {/* Velt Components */}
+        <div className="fixed bottom-10 right-10 z-50 space-y-4">
+          <VeltSidebarButton />
+          <VeltCommentsSidebar pageMode={true} />
+          <VeltComments />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default withAuth(Dashboard);
+```
+
+Visiting our dashboard page in the browser, we should experience the following:
+A login page that allows users to sign in with Google.
+A dashboard page that displays the document and allows users to add comments and @mentions.
+A comments sidebar that shows the comments and allows users to add new comments.
+A presence indicator that shows the users who are currently online and viewing the document.
+A notification button that indicates the number of unread notifications and opens a panel with all the notifications.
+A comment button that allows users to add comments and @mentions to the document.
+A logout button that enables users to sign out of the application.
+Conclusion
+In this article, we have demonstrated how to implement @mentions and comments in a web application using Velt. We have shown how to set up Firebase authentication to sync users with Velt, integrate Velt into a Next.js application, and use Velt's components for easy collaboration and user engagement.
+
+We have also discussed the benefits of using Velt, including the time saved in development and the ease of use of its components. By using Velt, you can focus on building your application and providing a great user experience rather than spending weeks or months building a comments and @mentions system from scratch.
+
+Velt handles all the complexity for you, allowing you to add these features to your application in hours, not months.
+
+We encourage you to explore Velt's features and see how they can help you build engaging web applications. With Velt, you can easily add comments, @mentions, notifications, and more to your application, allowing you to focus on what matters most - building a great user experience.

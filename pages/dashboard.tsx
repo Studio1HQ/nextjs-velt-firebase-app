@@ -3,12 +3,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { withAuth } from "@/utils/withAuth";
 import {
   useVeltClient,
-  useSetDocumentId,
-  VeltCommentTool,
-  VeltSidebarButton,
-  VeltCommentsSidebar,
   VeltComments,
+  VeltCommentTool,
   VeltPresence,
+  VeltNotificationsTool,
+  VeltCommentsSidebar,
+  VeltSidebarButton,
 } from "@veltdev/react";
 import { auth } from "@/firebase";
 import Link from "next/link";
@@ -53,13 +53,11 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (client) {
-      client.setDocument("unique-document-id", {
+      client.setDocument("collaborative-article-review", {
         documentName: "Web Development Insights",
       });
     }
   }, [client]);
-
-  useSetDocumentId("collaborative-article-review");
 
   return (
     <div className="p-6 min-h-screen bg-gray-100 relative">
@@ -68,14 +66,18 @@ const Dashboard = () => {
           <h1 className="text-3xl font-bold text-gray-800">
             DevInsights: Modern Web Development
           </h1>
-          <button
-            onClick={logout}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors">
-            Logout
-          </button>
+          <div className="flex items-center space-x-4">
+            <VeltCommentTool />
+            <VeltNotificationsTool />
+            <button
+              onClick={logout}
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors">
+              Logout
+            </button>
+          </div>
         </nav>
 
-        <div className="flex justify-between p-4 bg-blue-50">
+        <header className="flex justify-between p-4 bg-blue-50">
           <div className="flex items-center">
             <h2 className="mr-2 font-semibold">Online Contributors:</h2>
             <VeltPresence />
@@ -83,7 +85,7 @@ const Dashboard = () => {
           <div className="text-sm text-gray-600">
             Status: Community Review Draft
           </div>
-        </div>
+        </header>
 
         <main className="p-8">
           <article>
@@ -92,7 +94,7 @@ const Dashboard = () => {
                 The Evolution of Web Development in 2024
               </h2>
               <div className="flex items-center space-x-4 text-gray-600">
-                <span>By @AlexTech</span>
+                <span>By @Pels</span>
                 <span>·</span>
                 <time dateTime="2024-03-25">March 25, 2024</time>
                 <span>·</span>
@@ -210,10 +212,6 @@ const Dashboard = () => {
           <VeltSidebarButton />
           <VeltCommentsSidebar pageMode={true} />
           <VeltComments />
-        </div>
-
-        <div className="fixed top-1/2 right-10 transform -translate-y-1/2 z-50">
-          <VeltCommentTool />
         </div>
       </div>
     </div>
