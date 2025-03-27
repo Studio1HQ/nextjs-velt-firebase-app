@@ -83,7 +83,3 @@ yarn dev
 ## License
 
 This project is licensed under the [MIT License](LICENSE). See the LICENSE file for more information.
-
-## Author
-
-Created by [Timonwa](https://tech.timonwa.com/links). Visit [her blog](https://tech.timonwa.com/blog) for more awesome technical content like articles, code snippets, tech goodies, community projects and more.
