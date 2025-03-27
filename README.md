@@ -1,12 +1,26 @@
-# Next.js Velt App
+# Next.js Velt App Using Firebase Auth
 
-This is a Next.js application that integrates Firebase authentication and Velt for comments and @mentions. The project demonstrates how to build a modern web application with user authentication, real-time collaboration, and social features.
+This is a Next.js application that integrates Firebase authentication and Velt for comments and @mentions. The project demonstrates how to build a modern web application with user authentication, real-time updates, and social features for a collaborative experience.
 
-This is the code demo for [How to Implement @mentions and Comments with Firebase Auth Using Velt.dev](#). Here is the [live demo](#).
+This is the code demo for the blog post: [How to Implement @mentions and Comments with Firebase Auth Using Velt.dev](https://velt.dev/blog).
 
 Please give this repo a ⭐ if it was helpful to you.
 
-Visit [Timonwa's Notes](https://tech.timonwa.com/blog) for more awesome technical contents like articles, code snippets, tech goodies, community projects and more.
+## Table of Contents
+
+- [Next.js Velt App Using Firebase Auth](#nextjs-velt-app-using-firebase-auth)
+  - [Table of Contents](#table-of-contents)
+  - [Demo](#demo)
+  - [Features](#features)
+  - [Prerequisites](#prerequisites)
+  - [Getting Started](#getting-started)
+  - [Tech Stack](#tech-stack)
+  - [License](#license)
+  - [Author](#author)
+
+## Demo
+
+[![Demo](https://img.youtube.com/vi/your-video-id/0.jpg)](https://www.youtube.com/watch?v=your-video-id)
 
 ## Features
 
@@ -72,4 +86,4 @@ This project is licensed under the [MIT License](LICENSE). See the LICENSE file 
 
 ## Author
 
-Created by Timonwa.
+Created by [Timonwa](https://tech.timonwa.com/links). Visit [her blog](https://tech.timonwa.com/blog) for more awesome technical contents like articles, code snippets, tech goodies, community projects and more.

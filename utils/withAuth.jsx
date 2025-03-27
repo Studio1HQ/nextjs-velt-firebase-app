@@ -12,7 +12,7 @@ export function withAuth(Component) {
         if (user) {
           setUser(user);
         } else {
-          router.push("/login");
+          router.push("/");
         }
       });
 
