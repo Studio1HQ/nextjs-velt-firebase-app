@@ -16,7 +16,6 @@ Please give this repo a ⭐ if it was helpful to you.
   - [Getting Started](#getting-started)
   - [Tech Stack](#tech-stack)
   - [License](#license)
-  - [Author](#author)
 
 ## Demo
 
