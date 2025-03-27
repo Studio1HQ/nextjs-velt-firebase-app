@@ -20,7 +20,7 @@ Please give this repo a ⭐ if it was helpful to you.
 
 ## Demo
 
-[![Demo](https://img.youtube.com/vi/your-video-id/0.jpg)](https://www.youtube.com/watch?v=your-video-id)
+https://github.com/user-attachments/assets/fcf8a8e1-acbf-482e-9f91-b2e29a8b2cbb
 
 ## Features
 
@@ -38,8 +38,8 @@ Please give this repo a ⭐ if it was helpful to you.
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/timonwa/nextjs-velt-firebase-app.git
-cd nextjs-velt-firebase-app
+git clone https://github.com/Timonwa/nextjs-velt-firebase-app.git
+cd nextjs-velt-firebase-ap
 ```
 
 2. Install dependencies:
@@ -86,4 +86,4 @@ This project is licensed under the [MIT License](LICENSE). See the LICENSE file 
 
 ## Author
 
-Created by [Timonwa](https://tech.timonwa.com/links). Visit [her blog](https://tech.timonwa.com/blog) for more awesome technical contents like articles, code snippets, tech goodies, community projects and more.
+Created by [Timonwa](https://tech.timonwa.com/links). Visit [her blog](https://tech.timonwa.com/blog) for more awesome technical content like articles, code snippets, tech goodies, community projects and more.
