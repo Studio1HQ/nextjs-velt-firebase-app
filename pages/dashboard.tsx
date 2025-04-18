@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { withAuth } from "@/utils/withAuth";
 import {
@@ -9,6 +9,7 @@ import {
   VeltNotificationsTool,
   VeltCommentsSidebar,
   VeltSidebarButton,
+  useContactUtils,
 } from "@veltdev/react";
 import { auth } from "@/firebase";
 import Link from "next/link";
@@ -16,6 +17,18 @@ import Link from "next/link";
 const Dashboard = () => {
   const { logout } = useAuth();
   const { client } = useVeltClient();
+
+  const contactElement = useContactUtils();
+  const [users, setUsers] = useState<
+    {
+      userId: string;
+      name: string;
+      email: string;
+      photoUrl: string;
+      color: string;
+      textColor: string;
+    }[]
+  >([]);
 
   // Generate random hex color
   const getBgColor = () => {
@@ -32,25 +45,92 @@ const Dashboard = () => {
     return brightness >= 128 ? "#000" : "#fff";
   };
 
+  // Fetch users from Firebase
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        // For demonstration purposes, we're using a mock user list
+        // In a real app, you'd fetch this from your Firestore database
+        const mockUsers = [
+          {
+            userId: "user1",
+            name: "Alex Johnson",
+            email: "alex@example.com",
+            photoUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
+          },
+          {
+            userId: "user2",
+            name: "Taylor Smith",
+            email: "taylor@example.com",
+            photoUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Taylor",
+          },
+          {
+            userId: "user3",
+            name: "Jordan Lee",
+            email: "jordan@example.com",
+            photoUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jordan",
+          },
+        ];
+
+        const enrichedUsers = mockUsers.map(user => {
+          const bgColor = getBgColor();
+          return {
+            ...user,
+            color: bgColor,
+            textColor: getTextColor(bgColor),
+          };
+        });
+        setUsers(enrichedUsers);
+
+        // If you were using Firestore, you'd do something like this:
+        /*
+        const usersSnapshot = await getDocs(collection(db, "users"));
+        const usersList = usersSnapshot.docs.map(doc => ({
+          userId: doc.id,
+          ...doc.data()
+        }));
+        setUsers(usersList);
+        */
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  // Initialize Velt with current user
   useEffect(() => {
     const initVelt = async () => {
       if (client && auth?.currentUser) {
+        const bgColor = getBgColor();
+        // Create the Velt user object
         const user = {
           userId: auth?.currentUser?.uid,
           organizationId: "default",
-          name: auth?.currentUser?.displayName,
-          email: auth?.currentUser?.email,
-          photoUrl: auth?.currentUser?.photoURL,
-          color: getBgColor(),
-          textColor: getTextColor(getBgColor()),
+          name: auth?.currentUser?.displayName || "Anonymous User",
+          email: auth?.currentUser?.email || "",
+          photoUrl: auth?.currentUser?.photoURL || "",
+          color: bgColor,
+          textColor: getTextColor(bgColor),
         };
 
+        // Pass the user object to the SDK
         await client.identify(user);
+
+        // Add the current user to our users list if not already there
+        setUsers(prevUsers => {
+          if (!prevUsers.some(u => u.userId === user.userId)) {
+            return [...prevUsers, user];
+          }
+          return prevUsers;
+        });
       }
     };
     initVelt().catch(console.error);
   }, [client]);
 
+  // Set document ID
   useEffect(() => {
     if (client) {
       client.setDocument("collaborative-article-review", {
@@ -58,6 +138,23 @@ const Dashboard = () => {
       });
     }
   }, [client]);
+
+  // Update contact list for @mentions
+  useEffect(() => {
+    if (contactElement && users.length > 0) {
+      // Format contacts for Velt
+      const contacts = users.map(user => ({
+        userId: user.userId,
+        name: user.name,
+        email: user.email,
+        photoUrl: user.photoUrl,
+      }));
+
+      // Update the contact list in Velt using the contactElement
+      contactElement.updateContactList(contacts, { merge: true });
+      console.log("Contact list updated with:", contacts);
+    }
+  }, [contactElement, users]);
 
   return (
     <div className="p-6 min-h-screen bg-gray-100 relative">
